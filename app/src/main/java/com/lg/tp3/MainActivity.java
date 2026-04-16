@@ -20,20 +20,21 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Inicialización del ViewModel
-        vm = new ViewModelProvider(this).get(MainActivityViewModel.class);
+        vm = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(MainActivityViewModel.class);
 
-        // Observamos el cambio en el MutableLiveData
         vm.getMLibro().observe(this, new Observer<Libro>() {
             @Override
             public void onChanged(Libro libro) {
-                if (libro != null) {
-                    Intent intent = new Intent(MainActivity.this, DetalleLibroActivity.class);
-                    intent.putExtra("libro", libro); //
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(MainActivity.this, "Libro no encontrado", Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent(MainActivity.this, DetalleLibroActivity.class);
+                intent.putExtra("libro", libro); //
+                startActivity(intent);
+            }
+        });
+
+        vm.getMTexto().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
             }
         });
 
